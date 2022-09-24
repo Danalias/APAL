@@ -8,6 +8,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.9.0"
+  blackfoot_flutter_lint:
+    dependency: "direct main"
+    description:
+      name: blackfoot_flutter_lint
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.6"
   boolean_selector:
     dependency: transitive
     description:
