@@ -24,6 +24,30 @@ class SignInState extends State<SignIn> {
     super.dispose();
   }
 
+  void showErrorSnarckBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: Colors.red,
+        content: Text(message),
+      ),
+    );
+  }
+
+  Future<void> login() async {
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: usernameController.text,
+        password: passwordController.text,
+      );
+    } on FirebaseAuthException catch (e) {
+      if (e.code == "wrong-password" || e.code == "user-not-found") {
+        showErrorSnarckBar("Email/Mot de passe invalide");
+      } else if (e.code == "invalid-email") {
+        showErrorSnarckBar("Format de l'adresse incorect");
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -118,16 +142,5 @@ class SignInState extends State<SignIn> {
       ),
       backgroundColor: const Color.fromARGB(255, 23, 29, 83),
     );
-  }
-
-  Future<void> login() async {
-    try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: usernameController.text,
-        password: passwordController.text,
-      );
-    } on FirebaseAuthException catch (e) {
-      log(e.message!);
-    }
   }
 }

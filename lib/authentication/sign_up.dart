@@ -1,3 +1,4 @@
+import 'package:apal/main.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -33,6 +34,38 @@ class SignUpState extends State<SignUp> {
         content: Text(message),
       ),
     );
+  }
+
+  Future<void> createAccount() async {
+    try {
+      final UserCredential userCredential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: emailController.text,
+        password: passwordController.text,
+      );
+      final Map<String, dynamic> user = <String, dynamic>{
+        "email": emailController.text,
+        "admin": false,
+      };
+      await db.collection("users").doc(userCredential.user?.uid).set(user);
+      if (mounted) {
+        Navigator.pop(context);
+      }
+    } on FirebaseAuthException catch (e) {
+      if (e.code == "email-already-in-use") {
+        showErrorSnarckBar(
+          "L'adresse est déjà utilisé",
+        );
+      } else if (e.code == "invalid-email") {
+        showErrorSnarckBar(
+          "L'email est invalide",
+        );
+      } else if (e.code == "weak-password") {
+        showErrorSnarckBar(
+          "Minimum 6 charactères pour le mot de passe",
+        );
+      }
+    }
   }
 
   @override
@@ -88,36 +121,35 @@ class SignUpState extends State<SignUp> {
                       validator: (String? value) {
                         if (value == null || value.isEmpty) {
                           return "N'oubliez pas votre mot de passe";
-                        }  
+                        }
                         return null;
                       },
                     ),
                   ),
                 ),
                 SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.70,
-                    child: TextFormField(
-                      controller: password2Controller,
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        labelText: "Validez votre mot de passe",
-                        filled: true,
-                        fillColor: Colors.white,
+                  width: MediaQuery.of(context).size.width * 0.70,
+                  child: TextFormField(
+                    controller: password2Controller,
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
                       ),
-                      validator: (String? value) {
-                        if (value == null || value.isEmpty) {
-                          return "N'oubliez pas la validation!";
-                        }
-                        else if (value != passwordController.text) {
-                          return "Les mots de passe ne sont pas identiques";
-                        } 
-                        return null;
-                      },
+                      labelText: "Validez votre mot de passe",
+                      filled: true,
+                      fillColor: Colors.white,
                     ),
+                    validator: (String? value) {
+                      if (value == null || value.isEmpty) {
+                        return "N'oubliez pas la validation!";
+                      } else if (value != passwordController.text) {
+                        return "Les mots de passe ne sont pas identiques";
+                      }
+                      return null;
+                    },
                   ),
+                ),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
                   child: Row(
@@ -146,19 +178,7 @@ class SignUpState extends State<SignUp> {
                         ),
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                              FirebaseAuth.instance.createUserWithEmailAndPassword(
-                                email: emailController.text,
-                                password: passwordController.text,
-                              ).then((UserCredential res) {
-                                final Map<String, dynamic> user = <String, dynamic>{
-                                  "email": emailController.text,
-                                  "admin": false,
-                                };
-                                db.collection("users").doc(res.user?.uid).set(user); 
-                                Navigator.pop(context);
-                              }).onError((Object? error, _) { 
-                                showErrorSnarckBar("L'adresse mail est déjà utilisé");
-                              });
+                            createAccount();
                           }
                         },
                         child: const Text("Créez votre compte"),
