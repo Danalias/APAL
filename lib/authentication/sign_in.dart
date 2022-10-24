@@ -45,15 +45,16 @@ class SignInState extends State<SignIn> {
                     controller: usernameController,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.0),
+                        borderRadius: BorderRadius.circular(10.0),
                       ),
                       labelText: "Nom d'utilisateur",
                       filled: true,
                       fillColor: Colors.white,
                     ),
                     validator: (String? value) {
-                      return (value == null || value.isEmpty) ? "N'oubliez pas votre nom d'utilisateur" : null;
-
+                      return (value == null || value.isEmpty)
+                          ? "N'oubliez pas votre nom d'utilisateur"
+                          : null;
                     },
                   ),
                 ),
@@ -75,7 +76,7 @@ class SignInState extends State<SignIn> {
                       validator: (String? value) {
                         if (value == null || value.isEmpty) {
                           return "N'oubliez pas votre mot de passe";
-                        }  
+                        }
                         return null;
                       },
                     ),
@@ -113,19 +114,19 @@ class SignInState extends State<SignIn> {
               ],
             ),
           ),
-        ), 
+        ),
       ),
       backgroundColor: const Color.fromARGB(255, 23, 29, 83),
     );
   }
-  
-  Future <void>login() async {
+
+  Future<void> login() async {
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: usernameController.text,
         password: passwordController.text,
       );
-    } on FirebaseAuthException catch(e) {
+    } on FirebaseAuthException catch (e) {
       log(e.message!);
     }
   }

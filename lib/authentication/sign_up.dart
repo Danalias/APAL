@@ -26,19 +26,13 @@ class SignUpState extends State<SignUp> {
     super.dispose();
   }
 
-  bool isUserUsed(String? value) {
-    bool state = false;
-
-    db.collection("users").where("email", isEqualTo: value).get().then(
-      (QuerySnapshot<Object?> res) {
-        if (res.docs.isEmpty) {
-          state = false;
-        } else {
-          state = true;
-        }
-      },
+  void showErrorSnarckBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: Colors.red,
+        content: Text(message),
+      ),
     );
-    return state;
   }
 
   @override
@@ -72,13 +66,6 @@ class SignUpState extends State<SignUp> {
                       if (value == null || value.isEmpty) {
                         return "N'oubliez pas votre nom d'utilisateur";
                       }
-                      db.collection("users").where("email", isEqualTo: value).get().then(
-                        (QuerySnapshot<Object?> res) {
-                          if (res.docs.isNotEmpty) {
-                            return "Adresse déjà utilisé";
-                          } 
-                        },
-                      );
                       return null;
                     },
                   ),
@@ -159,7 +146,6 @@ class SignUpState extends State<SignUp> {
                         ),
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            
                               FirebaseAuth.instance.createUserWithEmailAndPassword(
                                 email: emailController.text,
                                 password: passwordController.text,
@@ -170,8 +156,9 @@ class SignUpState extends State<SignUp> {
                                 };
                                 db.collection("users").doc(res.user?.uid).set(user); 
                                 Navigator.pop(context);
+                              }).onError((Object? error, _) { 
+                                showErrorSnarckBar("L'adresse mail est déjà utilisé");
                               });
-                            setState(() {});
                           }
                         },
                         child: const Text("Créez votre compte"),

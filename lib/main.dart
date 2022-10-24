@@ -6,8 +6,7 @@ import 'authentication/firebase_options.dart';
 import 'authentication/sign_in.dart';
 import 'authentication/sign_up.dart';
 
-
-Future <void> main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -44,17 +43,16 @@ class Loading extends StatefulWidget {
   State<Loading> createState() => _LoadingState();
 }
 
-class _LoadingState extends State<Loading>
-  with TickerProviderStateMixin {
-    late final AnimationController _controller = AnimationController(
-      duration: const Duration(seconds: 3),
-      vsync: this,
-    );
-    late final Animation<double> _animation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.elasticOut,
-    );
-    
+class _LoadingState extends State<Loading> with TickerProviderStateMixin {
+  late final AnimationController _controller = AnimationController(
+    duration: const Duration(seconds: 3),
+    vsync: this,
+  );
+  late final Animation<double> _animation = CurvedAnimation(
+    parent: _controller,
+    curve: Curves.elasticOut,
+  );
+
   @override
   void dispose() {
     _controller.dispose();
@@ -64,12 +62,15 @@ class _LoadingState extends State<Loading>
   @override
   void initState() {
     super.initState();
-    _controller.addListener(() => setState((){ }));
+    _controller.addListener(() => setState(() {}));
     final TickerFuture ticker = _controller.repeat();
-    ticker.timeout(const Duration(seconds: 3 * 3), onTimeout: () {
-      _controller.stop();
-      Navigator.pushNamed(context, '/navigation');
-    },);
+    ticker.timeout(
+      const Duration(seconds: 3 * 3),
+      onTimeout: () {
+        _controller.stop();
+        Navigator.pushNamed(context, '/navigation');
+      },
+    );
   }
 
   @override
@@ -92,23 +93,22 @@ class _LoadingState extends State<Loading>
   }
 }
 
-
 class Navigation extends StatelessWidget {
   const Navigation({super.key});
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    body: StreamBuilder<User?>(
-      stream: FirebaseAuth.instance.authStateChanges(),
-      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-        if (snapshot.hasData) {
-          return const Annonces();
-        } else {
-          return const SignIn();
-        } 
-      },
-    ),
-  );
+        body: StreamBuilder<User?>(
+          stream: FirebaseAuth.instance.authStateChanges(),
+          builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+            if (snapshot.hasData) {
+              return const Annonces();
+            } else {
+              return const SignIn();
+            }
+          },
+        ),
+      );
 }
 
 class Annonces extends StatelessWidget {
