@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 
 import 'authentication/firebase_options.dart';
@@ -7,11 +10,19 @@ import 'authentication/sign_in.dart';
 import 'authentication/sign_up.dart';
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
+  await runZonedGuarded<Future<void>>(
+    () async {
+      WidgetsFlutterBinding.ensureInitialized();
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+      FlutterError.onError =
+          FirebaseCrashlytics.instance.recordFlutterFatalError;
+      runApp(const MyApp());
+    },
+    (Object error, StackTrace stack) =>
+        FirebaseCrashlytics.instance.recordError(error, stack, fatal: true),
   );
-  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -25,7 +36,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       initialRoute: '/',
-      routes: {
+      routes: <String, WidgetBuilder>{
         '/': (BuildContext context) => const Loading(),
         '/navigation': (BuildContext context) => const Navigation(),
         '/connexion': (BuildContext context) => const SignIn(),

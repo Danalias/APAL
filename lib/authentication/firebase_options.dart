@@ -4,16 +4,6 @@ import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
 
-/// Default [FirebaseOptions] for use with your Firebase apps.
-///
-/// Example:
-/// ```dart
-/// import 'firebase_options.dart';
-/// // ...
-/// await Firebase.initializeApp(
-///   options: DefaultFirebaseOptions.currentPlatform,
-/// );
-/// ```
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
@@ -25,10 +15,7 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -70,7 +57,19 @@ class DefaultFirebaseOptions {
     messagingSenderId: '227631528080',
     projectId: 'apal-e32b2',
     storageBucket: 'apal-e32b2.appspot.com',
-    iosClientId: '227631528080-jfv64p0c957dgghsqm0jakcjqtq9hkqn.apps.googleusercontent.com',
+    iosClientId:
+        '227631528080-jfv64p0c957dgghsqm0jakcjqtq9hkqn.apps.googleusercontent.com',
+    iosBundleId: 'com.example.apal',
+  );
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyAejHSVxu4tcwYnlVvG8UgKY6ES4YOSXqM',
+    appId: '1:227631528080:ios:c306be2499fc2636bd0015',
+    messagingSenderId: '227631528080',
+    projectId: 'apal-e32b2',
+    storageBucket: 'apal-e32b2.appspot.com',
+    iosClientId:
+        '227631528080-jfv64p0c957dgghsqm0jakcjqtq9hkqn.apps.googleusercontent.com',
     iosBundleId: 'com.example.apal',
   );
 }
