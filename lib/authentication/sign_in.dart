@@ -1,3 +1,4 @@
+import 'package:apal/authentication/sign_up.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -124,7 +125,12 @@ class SignInState extends State<SignIn> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    Navigator.pushNamed(context, '/inscription');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => const SignUp(),
+                      ),
+                    );
                   },
                   child: const Text(
                     "Pas de compte? Créez en un!",

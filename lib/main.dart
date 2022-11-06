@@ -5,9 +5,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 
+import 'annonces/annonces.dart';
 import 'authentication/firebase_options.dart';
 import 'authentication/sign_in.dart';
-import 'authentication/sign_up.dart';
 
 Future<void> main() async {
   await runZonedGuarded<Future<void>>(
@@ -35,14 +35,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      initialRoute: '/',
-      routes: <String, WidgetBuilder>{
-        '/': (BuildContext context) => const Loading(),
-        '/navigation': (BuildContext context) => const Navigation(),
-        '/connexion': (BuildContext context) => const SignIn(),
-        '/inscription': (BuildContext context) => const SignUp(),
-        '/annonces': (BuildContext context) => const Annonces(),
-      },
+      home: const Loading(),
     );
   }
 }
@@ -79,7 +72,12 @@ class _LoadingState extends State<Loading> with TickerProviderStateMixin {
       const Duration(seconds: 3 * 3),
       onTimeout: () {
         _controller.stop();
-        Navigator.pushNamed(context, '/navigation');
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (BuildContext context) => const Navigation(),
+          ),
+        );
       },
     );
   }
@@ -120,21 +118,4 @@ class Navigation extends StatelessWidget {
           },
         ),
       );
-}
-
-class Annonces extends StatelessWidget {
-  const Annonces({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: ElevatedButton.icon(
-          icon: const Icon(Icons.arrow_back, size: 32),
-          label: const Text("Déconnexion"),
-          onPressed: () => FirebaseAuth.instance.signOut(),
-        ),
-      ),
-    );
-  }
 }
