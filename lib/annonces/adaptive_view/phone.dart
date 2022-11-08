@@ -1,3 +1,4 @@
+import 'package:apal/profile/profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -13,7 +14,14 @@ class PhoneView extends StatelessWidget {
         leading: Padding(
           padding: const EdgeInsets.all(6.0),
           child: ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (BuildContext context) => const Profile(),
+                ),
+              );
+            },
             style: ElevatedButton.styleFrom(
               shape: const CircleBorder(),
               backgroundColor: Colors.white,
