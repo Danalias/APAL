@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "227631528080",
+    "project_id": "apal-e32b2",
+    "storage_bucket": "apal-e32b2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:227631528080:android:6362f3b816cd25c0bd0015",
+        "android_client_info": {
+          "package_name": "com.example.apal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "227631528080-046b8ft97h90u1umjggabosap7cu2fgo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAOiFyeWcxmZkcz1BzEgk5GKiQ7iLGLqtA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "227631528080-046b8ft97h90u1umjggabosap7cu2fgo.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "227631528080-jfv64p0c957dgghsqm0jakcjqtq9hkqn.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.apal"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,21 +1,33 @@
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'calendar.dart';
-import 'calendar_provider.dart';
+import 'dart:async';
 
-void main() {
-  runApp(
-    ChangeNotifierProvider<CalendarProvider>(
-      create: (BuildContext context) => CalendarProvider(),
-      child: const MyApp(),
-    ),
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/material.dart';
+
+import 'authentication/firebase_options.dart';
+import 'authentication/sign_in.dart';
+import 'authentication/sign_up.dart';
+
+Future<void> main() async {
+  await runZonedGuarded<Future<void>>(
+    () async {
+      WidgetsFlutterBinding.ensureInitialized();
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+      FlutterError.onError =
+          FirebaseCrashlytics.instance.recordFlutterFatalError;
+      runApp(const MyApp());
+    },
+    (Object error, StackTrace stack) =>
+        FirebaseCrashlytics.instance.recordError(error, stack, fatal: true),
   );
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -23,46 +35,106 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const CalendarPage(),
+      initialRoute: '/',
+      routes: <String, WidgetBuilder>{
+        '/': (BuildContext context) => const Loading(),
+        '/navigation': (BuildContext context) => const Navigation(),
+        '/connexion': (BuildContext context) => const SignIn(),
+        '/inscription': (BuildContext context) => const SignUp(),
+        '/annonces': (BuildContext context) => const Annonces(),
+      },
     );
   }
 }
 
-// class MyHomePage extends StatefulWidget {
-//   const MyHomePage({super.key, required this.title});
+class Loading extends StatefulWidget {
+  const Loading({super.key});
 
-//   final String title;
+  @override
+  State<Loading> createState() => _LoadingState();
+}
 
-//   @override
-//   State<MyHomePage> createState() => _MyHomePageState();
-// }
+class _LoadingState extends State<Loading> with TickerProviderStateMixin {
+  late final AnimationController _controller = AnimationController(
+    duration: const Duration(seconds: 3),
+    vsync: this,
+  );
+  late final Animation<double> _animation = CurvedAnimation(
+    parent: _controller,
+    curve: Curves.elasticOut,
+  );
 
-// class _MyHomePageState extends State<MyHomePage> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text(widget.title),
-//       ),
-//       body: Center(
-//         child: Column(
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: <Widget>[
-//             const Text(
-//               'You have pushed the button this many times:',
-//             ),
-//             Text(
-//               '$_counter',
-//               style: Theme.of(context).textTheme.headline4,
-//             ),
-//           ],
-//         ),
-//       ),
-//       floatingActionButton: FloatingActionButton(
-//         onPressed: _incrementCounter,
-//         tooltip: 'Increment',
-//         child: const Icon(Icons.add),
-//       ), // This trailing comma makes auto-formatting nicer for build methods.
-//     );
-//   }
-// }
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(() => setState(() {}));
+    final TickerFuture ticker = _controller.repeat();
+    ticker.timeout(
+      const Duration(seconds: 3 * 3),
+      onTimeout: () {
+        _controller.stop();
+        Navigator.pushNamed(context, '/navigation');
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: RotationTransition(
+          turns: _animation,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Image.asset(
+              'assets/logo.png',
+              height: MediaQuery.of(context).size.width * 0.85,
+            ),
+          ),
+        ),
+      ),
+      backgroundColor: const Color.fromARGB(255, 23, 29, 83),
+    );
+  }
+}
+
+class Navigation extends StatelessWidget {
+  const Navigation({super.key});
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+        body: StreamBuilder<User?>(
+          stream: FirebaseAuth.instance.authStateChanges(),
+          builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+            if (snapshot.hasData) {
+              return const Annonces();
+            } else {
+              return const SignIn();
+            }
+          },
+        ),
+      );
+}
+
+class Annonces extends StatelessWidget {
+  const Annonces({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: ElevatedButton.icon(
+          icon: const Icon(Icons.arrow_back, size: 32),
+          label: const Text("Déconnexion"),
+          onPressed: () => FirebaseAuth.instance.signOut(),
+        ),
+      ),
+    );
+  }
+}
