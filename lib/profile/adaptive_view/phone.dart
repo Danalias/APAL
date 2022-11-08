@@ -19,10 +19,17 @@ class PhoneViewState extends State<PhoneView> {
   final String? uid = FirebaseAuth.instance.currentUser?.uid;
   String imageUrl = "";
 
-  void pickUploadImage() async {
-    final XFile? image = await ImagePicker().pickImage(
-      source: ImageSource.gallery,
-    );
+  void uploadImage(String type) async {
+    late XFile? image;
+    if (type == "gallery") {
+      image = await ImagePicker().pickImage(
+        source: ImageSource.gallery,
+      );
+    } else {
+      image = await ImagePicker().pickImage(
+        source: ImageSource.camera,
+      );
+    }
     final Reference ref = FirebaseStorage.instance
         .ref()
         .child("profile_pics/$uid/profilepic.jpg");
@@ -47,12 +54,15 @@ class PhoneViewState extends State<PhoneView> {
         content: const Text('Choisir ou prendre une photo'),
         actions: <Widget>[
           TextButton(
-            onPressed: () {},
+            onPressed: () {
+              uploadImage("camera");
+              Navigator.pop(context);
+            },
             child: const Text('Prendre photo'),
           ),
           TextButton(
             onPressed: () {
-              pickUploadImage();
+              uploadImage("gallery");
               Navigator.pop(context);
             },
             child: const Text('Choisir photo'),
@@ -97,7 +107,6 @@ class PhoneViewState extends State<PhoneView> {
               GestureDetector(
                 onTap: () {
                   chooseProfileImage();
-                  //pickUploadImage();
                 },
                 child: Container(
                   width: MediaQuery.of(context).size.width * 0.30,
