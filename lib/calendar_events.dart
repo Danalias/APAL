@@ -22,6 +22,40 @@ class CalendarEvent {
   final String url;
 }
 
+class EventWidget extends StatelessWidget {
+  const EventWidget({
+    Key? key,
+    required this.event,
+  }) : super(key: key);
+
+  final CalendarEvent event;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(),
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Text(event.title),
+          SizedBox(
+            height: 100,
+            child: SingleChildScrollView(
+              child: Text(event.description),
+            ),
+          ),
+          Text("Sur la chaîne de ${event.channel}"),
+          Text("Jeu : ${event.game}"),
+          Text(event.url),
+        ],
+      ),
+    );
+  }
+}
+
 class CalendarEventForm extends StatefulWidget {
   const CalendarEventForm({Key? key}) : super(key: key);
 

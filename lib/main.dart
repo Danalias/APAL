@@ -140,10 +140,28 @@ class Annonces extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: ElevatedButton.icon(
-          icon: const Icon(Icons.arrow_back, size: 32),
-          label: const Text("Déconnexion"),
-          onPressed: () => FirebaseAuth.instance.signOut(),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            const Text(
+              'Calendrier',
+              style: TextStyle(fontSize: 30),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/calendar');
+              },
+              child: const Text('Calendar'),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                FirebaseAuth.instance.signOut();
+              },
+              child: const Text('Déconnexion'),
+            ),
+          ],
         ),
       ),
     );

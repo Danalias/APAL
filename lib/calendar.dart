@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'calendar_events.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import 'calendar_provider.dart';
@@ -20,7 +21,7 @@ class _CalendarPageState extends State<CalendarPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Calendrier (test)'),
+        title: const Text('Calendrier'),
       ),
       body: Center(
         // Create the calendar
@@ -45,6 +46,9 @@ class _CalendarPageState extends State<CalendarPage> {
               onPageChanged: (DateTime focusedDay) {
                 context.read<CalendarProvider>().setFocusedDay(focusedDay);
               },
+              // eventLoader: (DateTime date) {
+              //   return value.events[date] ?? <Widget>[];
+              // },
               calendarBuilders: firstBuilder,
             );
           },
