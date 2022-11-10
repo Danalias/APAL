@@ -11,7 +11,7 @@ Widget desktopBar(BuildContext context, String imageUrl) {
             padding: const EdgeInsets.all(16.0),
             child: GestureDetector(
               onTap: () {
-                Navigator.pushReplacement(
+                Navigator.push(
                   context,
                   MaterialPageRoute<dynamic>(
                     builder: (BuildContext context) => const Profile(),

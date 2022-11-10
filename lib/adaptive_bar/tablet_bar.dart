@@ -12,7 +12,7 @@ Widget tabletBar(BuildContext context, String imageUrl) {
           ),
           GestureDetector(
             onTap: () {
-              Navigator.pushReplacement(
+              Navigator.push(
                 context,
                 MaterialPageRoute<dynamic>(
                   builder: (BuildContext context) => const Profile(),
