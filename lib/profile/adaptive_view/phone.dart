@@ -72,7 +72,10 @@ class PhoneViewState extends State<PhoneView> {
     );
   }
 
-  void getProfilePic(Reference ref) async {
+  void getProfilePic() async {
+    final Reference ref = FirebaseStorage.instance
+        .ref()
+        .child("profile_pics/$uid/profilepic.jpg");
     try {
       final String pickUrl = await ref.getDownloadURL();
       setState(() {
@@ -86,10 +89,7 @@ class PhoneViewState extends State<PhoneView> {
   @override
   void initState() {
     super.initState();
-    final Reference ref = FirebaseStorage.instance
-        .ref()
-        .child("profile_pics/$uid/profilepic.jpg");
-    getProfilePic(ref);
+    getProfilePic();
   }
 
   @override
@@ -126,7 +126,14 @@ class PhoneViewState extends State<PhoneView> {
                           backgroundImage: NetworkImage(imageUrl),
                         ),
                 ),
-              )
+              ),
+              const Padding(
+                padding: EdgeInsets.only(top: 6.0),
+                child: Divider(
+                  thickness: 1,
+                  color: Colors.grey,
+                ),
+              ),
             ],
           ),
         ),

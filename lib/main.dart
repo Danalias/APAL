@@ -74,7 +74,7 @@ class _LoadingState extends State<Loading> with TickerProviderStateMixin {
         _controller.stop();
         Navigator.push(
           context,
-          MaterialPageRoute(
+          MaterialPageRoute<dynamic>(
             builder: (BuildContext context) => const Navigation(),
           ),
         );
@@ -92,7 +92,8 @@ class _LoadingState extends State<Loading> with TickerProviderStateMixin {
             padding: const EdgeInsets.all(8.0),
             child: Image.asset(
               'assets/logo.png',
-              height: MediaQuery.of(context).size.width * 0.85,
+              height: MediaQuery.of(context).size.height * 0.70,
+              width: MediaQuery.of(context).size.width * 0.70,
             ),
           ),
         ),

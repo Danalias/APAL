@@ -1,7 +1,40 @@
+import 'package:apal/adaptive_bar/tablet_bar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
-class TabletView extends StatelessWidget {
+class TabletView extends StatefulWidget {
   const TabletView({super.key});
+
+  @override
+  TabletViewState createState() {
+    return TabletViewState();
+  }
+}
+
+class TabletViewState extends State<TabletView> {
+  String imageUrl = "";
+
+  void getProfilePic() async {
+    final String? uid = FirebaseAuth.instance.currentUser?.uid;
+    final Reference ref = FirebaseStorage.instance
+        .ref()
+        .child("profile_pics/$uid/profilepic.jpg");
+    try {
+      final String pickUrl = await ref.getDownloadURL();
+      setState(() {
+        imageUrl = pickUrl;
+      });
+    } on FirebaseException catch (_) {
+      imageUrl = "";
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getProfilePic();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -10,49 +43,7 @@ class TabletView extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 0.10,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: <Widget>[
-                    const Padding(
-                      padding: EdgeInsets.all(16.0),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        shape: const CircleBorder(),
-                        backgroundColor: Colors.white,
-                      ),
-                      child: const Icon(
-                        Icons.person,
-                        color: Colors.grey,
-                      ),
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.all(16.0),
-                    ),
-                    IconButton(
-                      onPressed: () {},
-                      icon: const Icon(
-                        Icons.home_outlined,
-                        color: Colors.white,
-                      ),
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.all(16.0),
-                    ),
-                    IconButton(
-                      onPressed: () {},
-                      icon: const Icon(
-                        Icons.calendar_today_outlined,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            tabletBar(context, imageUrl),
             const VerticalDivider(
               width: 10,
               thickness: 1,

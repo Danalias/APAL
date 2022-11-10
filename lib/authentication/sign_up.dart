@@ -82,24 +82,27 @@ class SignUpState extends State<SignUp> {
                   height: MediaQuery.of(context).size.height * 0.50,
                   width: MediaQuery.of(context).size.width * 0.50,
                 ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.70,
-                  child: TextFormField(
-                    controller: emailController,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
+                Padding(
+                  padding: const EdgeInsets.only(top: 16.0),
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.70,
+                    child: TextFormField(
+                      controller: emailController,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        labelText: "Adresse mail",
+                        filled: true,
+                        fillColor: Colors.white,
                       ),
-                      labelText: "Nom d'utilisateur",
-                      filled: true,
-                      fillColor: Colors.white,
+                      validator: (String? value) {
+                        if (value == null || value.isEmpty) {
+                          return "N'oubliez pas votre adresse mail";
+                        }
+                        return null;
+                      },
                     ),
-                    validator: (String? value) {
-                      if (value == null || value.isEmpty) {
-                        return "N'oubliez pas votre nom d'utilisateur";
-                      }
-                      return null;
-                    },
                   ),
                 ),
                 Padding(
