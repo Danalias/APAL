@@ -19,7 +19,6 @@ class DesktopView extends StatefulWidget {
 
 class DesktopViewState extends State<DesktopView> {
   final String? uid = FirebaseAuth.instance.currentUser?.uid;
-  String userName = "";
   String imageUrl = "";
   late TextEditingController _controller;
 
@@ -93,7 +92,14 @@ class DesktopViewState extends State<DesktopView> {
   @override
   void initState() {
     super.initState();
+    final DocumentReference<Map<String, dynamic>> docRef =
+        FirebaseFirestore.instance.collection("users").doc(uid);
     _controller = TextEditingController();
+    docRef.get().then((DocumentSnapshot<Map<String, dynamic>> value) {
+      if (value.data()?["name"] != "") {
+        _controller.text = value.data()?["name"];
+      }
+    });
     getProfilePic();
   }
 
@@ -152,6 +158,43 @@ class DesktopViewState extends State<DesktopView> {
                     child: Divider(
                       thickness: 1,
                       color: Colors.grey,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 16.0),
+                    child: Center(
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.40,
+                        child: TextField(
+                          onSubmitted: (String value) {
+                            final Map<String, String> data = <String, String>{
+                              "name": value
+                            };
+
+                            FirebaseFirestore.instance
+                                .collection("users")
+                                .doc(uid)
+                                .set(data, SetOptions(merge: true));
+                          },
+                          controller: _controller,
+                          decoration: InputDecoration(
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                  color: Colors.white,
+                                ),
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              filled: true,
+                              fillColor: const Color.fromARGB(255, 23, 29, 83),
+                              labelText: "Nom",
+                              labelStyle: const TextStyle(
+                                color: Colors.white,
+                              )),
+                          style: const TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ],

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:apal/adaptive_bar/tablet_bar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
@@ -19,6 +20,7 @@ class TabletView extends StatefulWidget {
 class TabletViewState extends State<TabletView> {
   final String? uid = FirebaseAuth.instance.currentUser?.uid;
   String imageUrl = "";
+  late TextEditingController _controller;
 
   void getProfilePic() async {
     final Reference ref = FirebaseStorage.instance
@@ -88,8 +90,22 @@ class TabletViewState extends State<TabletView> {
   }
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   void initState() {
     super.initState();
+    final DocumentReference<Map<String, dynamic>> docRef =
+        FirebaseFirestore.instance.collection("users").doc(uid);
+    _controller = TextEditingController();
+    docRef.get().then((DocumentSnapshot<Map<String, dynamic>> value) {
+      if (value.data()?["name"] != "") {
+        _controller.text = value.data()?["name"];
+      }
+    });
     getProfilePic();
   }
 
@@ -142,6 +158,43 @@ class TabletViewState extends State<TabletView> {
                     child: Divider(
                       thickness: 1,
                       color: Colors.grey,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 16.0),
+                    child: Center(
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.50,
+                        child: TextField(
+                          onSubmitted: (String value) {
+                            final Map<String, String> data = <String, String>{
+                              "name": value
+                            };
+
+                            FirebaseFirestore.instance
+                                .collection("users")
+                                .doc(uid)
+                                .set(data, SetOptions(merge: true));
+                          },
+                          controller: _controller,
+                          decoration: InputDecoration(
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                  color: Colors.white,
+                                ),
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              filled: true,
+                              fillColor: const Color.fromARGB(255, 23, 29, 83),
+                              labelText: "Nom",
+                              labelStyle: const TextStyle(
+                                color: Colors.white,
+                              )),
+                          style: const TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ],

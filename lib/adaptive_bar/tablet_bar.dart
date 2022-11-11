@@ -1,4 +1,6 @@
+import 'package:apal/main.dart';
 import 'package:apal/profile/profile.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 Widget tabletBar(BuildContext context, String imageUrl) {
@@ -42,7 +44,7 @@ Widget tabletBar(BuildContext context, String imageUrl) {
           IconButton(
             onPressed: () {},
             icon: const Icon(
-              Icons.home_outlined,
+              Icons.calendar_today_outlined,
               color: Colors.white,
             ),
           ),
@@ -50,9 +52,17 @@ Widget tabletBar(BuildContext context, String imageUrl) {
             padding: EdgeInsets.all(16.0),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              FirebaseAuth.instance.signOut();
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute<dynamic>(
+                  builder: (BuildContext context) => const Navigation(),
+                ),
+                (Route<dynamic> route) => false,
+              );
+            },
             icon: const Icon(
-              Icons.calendar_today_outlined,
+              Icons.logout_outlined,
               color: Colors.white,
             ),
           ),

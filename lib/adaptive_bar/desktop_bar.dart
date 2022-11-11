@@ -1,4 +1,6 @@
+import 'package:apal/main.dart';
 import 'package:apal/profile/profile.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 Widget desktopBar(BuildContext context, String imageUrl) {
@@ -45,12 +47,12 @@ Widget desktopBar(BuildContext context, String imageUrl) {
               IconButton(
                 onPressed: () {},
                 icon: const Icon(
-                  Icons.home_outlined,
+                  Icons.calendar_today_outlined,
                   color: Colors.white,
                 ),
               ),
               const Text(
-                "Annonces",
+                "Calendrier",
                 style: TextStyle(
                   color: Colors.white,
                 ),
@@ -64,14 +66,22 @@ Widget desktopBar(BuildContext context, String imageUrl) {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  FirebaseAuth.instance.signOut();
+                  Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute<dynamic>(
+                      builder: (BuildContext context) => const Navigation(),
+                    ),
+                    (Route<dynamic> route) => false,
+                  );
+                },
                 icon: const Icon(
-                  Icons.calendar_today_outlined,
+                  Icons.logout_outlined,
                   color: Colors.white,
                 ),
               ),
               const Text(
-                "Calendrier",
+                "Déconnexion",
                 style: TextStyle(
                   color: Colors.white,
                 ),

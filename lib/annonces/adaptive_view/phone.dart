@@ -72,13 +72,7 @@ class PhoneViewState extends State<PhoneView> {
           ),
         ),
       ),
-      body: Center(
-        child: ElevatedButton.icon(
-          icon: const Icon(Icons.arrow_back, size: 32),
-          label: const Text("Déconnexion"),
-          onPressed: () => FirebaseAuth.instance.signOut(),
-        ),
-      ),
+      body: const Center(),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(

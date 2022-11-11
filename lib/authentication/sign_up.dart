@@ -45,6 +45,7 @@ class SignUpState extends State<SignUp> {
       final Map<String, dynamic> user = <String, dynamic>{
         "email": emailController.text,
         "admin": false,
+        "name": "",
       };
       await db.collection("users").doc(userCredential.user?.uid).set(user);
       if (mounted) {
