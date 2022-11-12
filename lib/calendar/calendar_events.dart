@@ -142,7 +142,7 @@ class _CalendarEventFormState extends State<CalendarEventForm> {
   final List<String> _games = <String>[
     "League of Legends",
     "Valorant",
-    "Rocke League",
+    "Rocket League",
     "TFT"
   ];
   final TextEditingController _timeController =
