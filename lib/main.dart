@@ -4,10 +4,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import 'annonces/annonces.dart';
 import 'authentication/firebase_options.dart';
 import 'authentication/sign_in.dart';
+import 'calendar/calendar.dart';
+import 'calendar/calendar_provider.dart';
 
 Future<void> main() async {
   await runZonedGuarded<Future<void>>(
@@ -18,7 +20,18 @@ Future<void> main() async {
       );
       FlutterError.onError =
           FirebaseCrashlytics.instance.recordFlutterFatalError;
-      runApp(const MyApp());
+      runApp(
+        MultiProvider(
+          providers: <ChangeNotifierProvider<ChangeNotifier>>[
+            ChangeNotifierProvider<CalendarProvider>(
+              create: (_) {
+                return CalendarProvider();
+              },
+            ),
+          ],
+          child: const MyApp(),
+        ),
+      );
     },
     (Object error, StackTrace stack) =>
         FirebaseCrashlytics.instance.recordError(error, stack, fatal: true),
@@ -31,7 +44,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'APAL',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -112,7 +125,7 @@ class Navigation extends StatelessWidget {
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
             if (snapshot.hasData) {
-              return const Annonces();
+              return const Calendar();
             } else {
               return const SignIn();
             }

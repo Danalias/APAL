@@ -1,4 +1,5 @@
 import 'package:apal/adaptive_bar/tablet_bar.dart';
+import 'package:apal/calendar/calendar_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -49,14 +50,7 @@ class TabletViewState extends State<TabletView> {
               thickness: 1,
               color: Colors.grey,
             ),
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.deepOrangeAccent,
-                ),
-              ),
-            ),
+            const Expanded(child: CalendarPage()),
           ],
         ),
       ),

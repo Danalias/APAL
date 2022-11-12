@@ -1,3 +1,4 @@
+import 'package:apal/calendar/calendar_page.dart';
 import 'package:apal/profile/profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -72,24 +73,7 @@ class PhoneViewState extends State<PhoneView> {
           ),
         ),
       ),
-      body: const Center(),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.calendar_today_outlined,
-              color: Colors.white,
-            ),
-            label: '',
-          )
-        ],
-        selectedItemColor: Colors.white,
-        backgroundColor: const Color.fromARGB(255, 0, 0, 0),
-      ),
+      body: const Center(child: CalendarPage()),
       backgroundColor: const Color.fromARGB(255, 23, 29, 83),
     );
   }
