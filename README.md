@@ -17,7 +17,8 @@
   - `Flutter build  ipa –export-method ad-hoc` (IOS) et installer le fichier créé dans build/ios/ sur votre Iphone
   - `Flutter build web –web-renderer html` (web) cela va créer un dossier build/web/ dans lequel se trouve l’application. Pour la lancer sur web vous devez ouvrir un terminal dans le dossier et héberger l’application en local avec Python ou un serveur node par exemple (`python -m http.server 8000`) et vous rendre à l’adresse localhost:8000 pour y retrouver l'application
 
-Architecture :
+## Architecture
+
 Les widgets de notre projet se trouvent dans Lib.
 Tous réparties dans des sous dossiers qui portent le nom de la feature :
 
