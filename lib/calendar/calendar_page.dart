@@ -27,7 +27,10 @@ class _CalendarPageState extends State<CalendarPage> {
   }
 
   void createPopupDialog(
-      BuildContext context, EventWidget? event, bool isAdmin) {
+    BuildContext context,
+    EventWidget? event,
+    bool isAdmin,
+  ) {
     // Make the popup dialog adapt to the screen size and the platform
     final double width = MediaQuery.of(context).size.width;
     final double height = MediaQuery.of(context).size.height;
@@ -76,11 +79,12 @@ class _CalendarPageState extends State<CalendarPage> {
           return AlertDialog(
             title: Text(event.event.title),
             content: SizedBox(
-                width: isDesktop ? width * 0.3 : width * 0.9,
-                height: isDesktop ? height * 0.3 : height * 0.2,
-                child: SingleChildScrollView(
-                  child: showEvent,
-                )),
+              width: isDesktop ? width * 0.3 : width * 0.9,
+              height: isDesktop ? height * 0.3 : height * 0.2,
+              child: SingleChildScrollView(
+                child: showEvent,
+              ),
+            ),
           );
         },
       );

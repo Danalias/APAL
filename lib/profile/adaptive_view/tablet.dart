@@ -178,18 +178,19 @@ class TabletViewState extends State<TabletView> {
                           },
                           controller: _controller,
                           decoration: InputDecoration(
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: const BorderSide(
-                                  color: Colors.white,
-                                ),
-                                borderRadius: BorderRadius.circular(10.0),
-                              ),
-                              filled: true,
-                              fillColor: const Color.fromARGB(255, 23, 29, 83),
-                              labelText: "Nom",
-                              labelStyle: const TextStyle(
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
                                 color: Colors.white,
-                              )),
+                              ),
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            filled: true,
+                            fillColor: const Color.fromARGB(255, 23, 29, 83),
+                            labelText: "Nom",
+                            labelStyle: const TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
                           style: const TextStyle(
                             color: Colors.white,
                           ),
