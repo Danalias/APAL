@@ -1,5 +1,8 @@
+import 'package:apal/authentication/sign_up.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import 'forgot_password.dart';
 
 class SignIn extends StatefulWidget {
   const SignIn({super.key});
@@ -34,8 +37,8 @@ class SignInState extends State<SignIn> {
   Future<void> login() async {
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: usernameController.text,
-        password: passwordController.text,
+        email: usernameController.text.trim(),
+        password: passwordController.text.trim(),
       );
     } on FirebaseAuthException catch (e) {
       if (e.code == "wrong-password" || e.code == "user-not-found") {
@@ -61,23 +64,26 @@ class SignInState extends State<SignIn> {
                   height: MediaQuery.of(context).size.height * 0.50,
                   width: MediaQuery.of(context).size.width * 0.50,
                 ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.70,
-                  child: TextFormField(
-                    controller: usernameController,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
+                Padding(
+                  padding: const EdgeInsets.only(top: 16.0),
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.70,
+                    child: TextFormField(
+                      controller: usernameController,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        labelText: "Nom d'utilisateur",
+                        filled: true,
+                        fillColor: Colors.white,
                       ),
-                      labelText: "Nom d'utilisateur",
-                      filled: true,
-                      fillColor: Colors.white,
+                      validator: (String? value) {
+                        return (value == null || value.isEmpty)
+                            ? "N'oubliez pas votre nom d'utilisateur"
+                            : null;
+                      },
                     ),
-                    validator: (String? value) {
-                      return (value == null || value.isEmpty)
-                          ? "N'oubliez pas votre nom d'utilisateur"
-                          : null;
-                    },
                   ),
                 ),
                 Padding(
@@ -124,7 +130,33 @@ class SignInState extends State<SignIn> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    Navigator.pushNamed(context, '/inscription');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute<dynamic>(
+                        builder: (BuildContext context) =>
+                            const ForgotPassword(),
+                      ),
+                    );
+                  },
+                  child: const Text(
+                    "Mot de passe oublié?",
+                    style: TextStyle(
+                      decoration: TextDecoration.underline,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                const Padding(
+                  padding: EdgeInsets.all(6.0),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute<dynamic>(
+                        builder: (BuildContext context) => const SignUp(),
+                      ),
+                    );
                   },
                   child: const Text(
                     "Pas de compte? Créez en un!",

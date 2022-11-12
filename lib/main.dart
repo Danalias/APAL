@@ -6,9 +6,9 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'annonces/annonces.dart';
 import 'authentication/firebase_options.dart';
 import 'authentication/sign_in.dart';
-import 'authentication/sign_up.dart';
 import 'calendar.dart';
 import 'calendar_provider.dart';
 
@@ -49,15 +49,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      initialRoute: '/',
-      routes: <String, WidgetBuilder>{
-        '/': (BuildContext context) => const Loading(),
-        '/navigation': (BuildContext context) => const Navigation(),
-        '/connexion': (BuildContext context) => const SignIn(),
-        '/inscription': (BuildContext context) => const SignUp(),
-        '/annonces': (BuildContext context) => const Annonces(),
-        '/calendar': (BuildContext context) => const CalendarPage(),
-      },
+      home: const Loading(),
     );
   }
 }
@@ -94,7 +86,12 @@ class _LoadingState extends State<Loading> with TickerProviderStateMixin {
       const Duration(seconds: 3 * 3),
       onTimeout: () {
         _controller.stop();
-        Navigator.pushNamed(context, '/navigation');
+        Navigator.push(
+          context,
+          MaterialPageRoute<dynamic>(
+            builder: (BuildContext context) => const Navigation(),
+          ),
+        );
       },
     );
   }
@@ -109,7 +106,8 @@ class _LoadingState extends State<Loading> with TickerProviderStateMixin {
             padding: const EdgeInsets.all(8.0),
             child: Image.asset(
               'assets/logo.png',
-              height: MediaQuery.of(context).size.width * 0.85,
+              height: MediaQuery.of(context).size.height * 0.70,
+              width: MediaQuery.of(context).size.width * 0.70,
             ),
           ),
         ),
@@ -135,39 +133,4 @@ class Navigation extends StatelessWidget {
           },
         ),
       );
-}
-
-class Annonces extends StatelessWidget {
-  const Annonces({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'Calendrier',
-              style: TextStyle(fontSize: 30),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/calendar');
-              },
-              child: const Text('Calendar'),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                FirebaseAuth.instance.signOut();
-              },
-              child: const Text('Déconnexion'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }
