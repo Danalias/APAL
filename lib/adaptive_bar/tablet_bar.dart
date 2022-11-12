@@ -1,3 +1,4 @@
+import 'package:apal/calendar/calendar.dart';
 import 'package:apal/main.dart';
 import 'package:apal/profile/profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -42,7 +43,14 @@ Widget tabletBar(BuildContext context, String imageUrl) {
             padding: EdgeInsets.all(16.0),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute<dynamic>(
+                  builder: (BuildContext context) => const Calendar(),
+                ),
+              );
+            },
             icon: const Icon(
               Icons.calendar_today_outlined,
               color: Colors.white,

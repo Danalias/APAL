@@ -85,11 +85,11 @@ class _LoadingState extends State<Loading> with TickerProviderStateMixin {
       const Duration(seconds: 3 * 3),
       onTimeout: () {
         _controller.stop();
-        Navigator.push(
-          context,
+        Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute<dynamic>(
             builder: (BuildContext context) => const Navigation(),
           ),
+          (Route<dynamic> route) => false,
         );
       },
     );
@@ -120,16 +120,18 @@ class Navigation extends StatelessWidget {
   const Navigation({super.key});
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        body: StreamBuilder<User?>(
-          stream: FirebaseAuth.instance.authStateChanges(),
-          builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-            if (snapshot.hasData) {
-              return const Calendar();
-            } else {
-              return const SignIn();
-            }
-          },
-        ),
-      );
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: StreamBuilder<User?>(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+          if (snapshot.hasData) {
+            return const Calendar();
+          } else {
+            return const SignIn();
+          }
+        },
+      ),
+    );
+  }
 }

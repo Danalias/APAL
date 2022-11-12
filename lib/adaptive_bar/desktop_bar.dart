@@ -1,3 +1,4 @@
+import 'package:apal/calendar/calendar.dart';
 import 'package:apal/main.dart';
 import 'package:apal/profile/profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -45,7 +46,14 @@ Widget desktopBar(BuildContext context, String imageUrl) {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute<dynamic>(
+                      builder: (BuildContext context) => const Calendar(),
+                    ),
+                  );
+                },
                 icon: const Icon(
                   Icons.calendar_today_outlined,
                   color: Colors.white,
