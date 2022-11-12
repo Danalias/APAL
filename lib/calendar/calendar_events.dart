@@ -151,151 +151,146 @@ class _CalendarEventFormState extends State<CalendarEventForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Ajouter un événement'),
-      ),
-      body: Consumer<CalendarProvider>(
-        builder: (BuildContext context, CalendarProvider value, Widget? child) {
-          return Form(
-            key: _formKey,
-            child: Column(
-              children: <Widget>[
-                TextFormField(
-                  controller: _titleController,
-                  decoration: const InputDecoration(
-                    hintText: 'Titre',
-                  ),
-                  validator: (String? value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Veuillez entrer un titre';
-                    }
-                    return null;
-                  },
+    return Consumer<CalendarProvider>(
+      builder: (BuildContext context, CalendarProvider value, Widget? child) {
+        return Form(
+          key: _formKey,
+          child: Column(
+            children: <Widget>[
+              TextFormField(
+                controller: _titleController,
+                decoration: const InputDecoration(
+                  hintText: 'Titre',
                 ),
-                TextFormField(
-                  controller: _descriptionController,
-                  decoration: const InputDecoration(
-                    hintText: 'Description',
-                  ),
-                  validator: (String? value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Veuillez entrer une description';
-                    }
-                    return null;
-                  },
+                validator: (String? value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Veuillez entrer un titre';
+                  }
+                  return null;
+                },
+              ),
+              TextFormField(
+                controller: _descriptionController,
+                decoration: const InputDecoration(
+                  hintText: 'Description',
                 ),
-                TextFormField(
-                  controller: _channelController,
-                  decoration: const InputDecoration(
-                    hintText: 'Chaîne',
-                  ),
-                  validator: (String? value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Veuillez entrer une chaîne';
-                    }
-                    return null;
-                  },
+                validator: (String? value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Veuillez entrer une description';
+                  }
+                  return null;
+                },
+              ),
+              TextFormField(
+                controller: _channelController,
+                decoration: const InputDecoration(
+                  hintText: 'Chaîne',
                 ),
-                DropdownButtonFormField<String>(
-                  items: _games.map((String game) {
-                    return DropdownMenuItem<String>(
-                      value: game,
-                      child: Text(game),
-                    );
-                  }).toList(),
-                  onChanged: (String? value) {
-                    context.read<CalendarProvider>().setSelectedGame(value);
-                  },
-                  value: value.selectedGame,
-                  decoration: const InputDecoration(
-                    hintText: 'Jeu',
-                  ),
-                  validator: (String? value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Veuillez sélectionner un jeu';
-                    }
-                    return null;
-                  },
+                validator: (String? value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Veuillez entrer une chaîne';
+                  }
+                  return null;
+                },
+              ),
+              DropdownButtonFormField<String>(
+                items: _games.map((String game) {
+                  return DropdownMenuItem<String>(
+                    value: game,
+                    child: Text(game),
+                  );
+                }).toList(),
+                onChanged: (String? value) {
+                  context.read<CalendarProvider>().setSelectedGame(value);
+                },
+                value: value.selectedGame,
+                decoration: const InputDecoration(
+                  hintText: 'Jeu',
                 ),
-                TextFormField(
-                  controller: _timeController,
-                  decoration: const InputDecoration(
-                    hintText: 'Heure',
-                  ),
-                  onTap: () {
-                    showTimePicker(
-                      context: context,
-                      initialTime: TimeOfDay.now(),
-                    ).then((TimeOfDay? value) {
-                      if (value != null) {
-                        _timeController.text = value.format(context);
+                validator: (String? value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Veuillez sélectionner un jeu';
+                  }
+                  return null;
+                },
+              ),
+              TextFormField(
+                controller: _timeController,
+                decoration: const InputDecoration(
+                  hintText: 'Heure',
+                ),
+                onTap: () {
+                  showTimePicker(
+                    context: context,
+                    initialTime: TimeOfDay.now(),
+                  ).then((TimeOfDay? value) {
+                    if (value != null) {
+                      _timeController.text = value.format(context);
+                    }
+                  });
+                },
+                validator: (String? value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Veuillez entrer une heure';
+                  }
+                  return null;
+                },
+              ),
+              TextFormField(
+                controller: _urlController,
+                decoration: const InputDecoration(
+                  hintText: 'URL',
+                ),
+                validator: (String? value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Veuillez entrer une URL';
+                  }
+                  return null;
+                },
+              ),
+              Row(
+                children: <Widget>[
+                  ElevatedButton(
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Processing Data')),
+                        );
+                        context.read<CalendarProvider>().addEvent(
+                              DateTime(
+                                value.selectedDay.year,
+                                value.selectedDay.month,
+                                value.selectedDay.day,
+                                int.parse(_timeController.text.split(":")[0]),
+                                int.parse(_timeController.text.split(":")[1]),
+                              ),
+                              CalendarEvent(
+                                title: _titleController.text,
+                                description: _descriptionController.text,
+                                channel: _channelController.text,
+                                game: value.selectedGame,
+                                date: value.selectedDay.toString(),
+                                time: _timeController.text,
+                                url: _urlController.text,
+                              ),
+                            );
                       }
-                    });
-                  },
-                  validator: (String? value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Veuillez entrer une heure';
-                    }
-                    return null;
-                  },
-                ),
-                TextFormField(
-                  controller: _urlController,
-                  decoration: const InputDecoration(
-                    hintText: 'URL',
+                    },
+                    child: const Text('Créer/Modifier'),
                   ),
-                  validator: (String? value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Veuillez entrer une URL';
-                    }
-                    return null;
-                  },
-                ),
-                Row(
-                  children: <Widget>[
-                    ElevatedButton(
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Processing Data')),
-                          );
-                          context.read<CalendarProvider>().addEvent(
-                                DateTime(
-                                  value.selectedDay.year,
-                                  value.selectedDay.month,
-                                  value.selectedDay.day,
-                                  int.parse(_timeController.text.split(":")[0]),
-                                  int.parse(_timeController.text.split(":")[1]),
-                                ),
-                                CalendarEvent(
-                                  title: _titleController.text,
-                                  description: _descriptionController.text,
-                                  channel: _channelController.text,
-                                  game: value.selectedGame,
-                                  date: value.selectedDay.toString(),
-                                  time: _timeController.text,
-                                  url: _urlController.text,
-                                ),
-                              );
-                        }
-                      },
-                      child: const Text('Créer/Modifier'),
-                    ),
-                    // Cancel Button
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Text('Annuler'),
-                    ),
-                  ],
-                )
-              ],
-            ),
-          );
-        },
-      ),
+                  // Cancel Button
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text('Annuler'),
+                  ),
+                ],
+              )
+            ],
+          ),
+        );
+      },
     );
   }
 }

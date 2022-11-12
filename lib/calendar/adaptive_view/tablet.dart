@@ -50,7 +50,7 @@ class TabletViewState extends State<TabletView> {
               thickness: 1,
               color: Colors.grey,
             ),
-            const CalendarPage(),
+            const Expanded(child: CalendarPage()),
           ],
         ),
       ),

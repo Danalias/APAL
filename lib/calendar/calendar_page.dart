@@ -76,10 +76,11 @@ class _CalendarPageState extends State<CalendarPage> {
           return AlertDialog(
             title: Text(event.event.title),
             content: SizedBox(
-              width: isDesktop ? width * 0.3 : width * 0.9,
-              height: isDesktop ? height * 0.3 : height * 0.2,
-              child: showEvent,
-            ),
+                width: isDesktop ? width * 0.3 : width * 0.9,
+                height: isDesktop ? height * 0.3 : height * 0.2,
+                child: SingleChildScrollView(
+                  child: showEvent,
+                )),
           );
         },
       );
@@ -88,84 +89,81 @@ class _CalendarPageState extends State<CalendarPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Calendrier'),
-      ),
-      body: Center(
+    return
         // Create the calendar
-        child: Consumer<CalendarProvider>(
-          builder:
-              (BuildContext context, CalendarProvider value, Widget? child) {
-            return TableCalendar<Widget>(
-              firstDay: DateTime.utc(2021),
-              lastDay: DateTime.utc(2024, 12, 31),
-              focusedDay: value.focusedDay,
-              calendarFormat: value.calendarFormat,
-              selectedDayPredicate: (DateTime day) {
-                return isSameDay(value.selectedDay, day);
-              },
-              onDaySelected: (DateTime selectedDay, DateTime focusedDay) {
-                if (!isSameDay(value.selectedDay, selectedDay)) {
-                  context.read<CalendarProvider>().setSelectedDay(selectedDay);
-                  context.read<CalendarProvider>().setFocusedDay(focusedDay);
-                }
-
-                // If the user is admin and click on a day, he can add an event
-                // if the user is not admin, he can just see the events
-                FirebaseFirestore.instance
-                    .collection('users')
-                    .doc(FirebaseAuth.instance.currentUser!.uid)
-                    .get()
-                    .then((DocumentSnapshot<Object?> documentSnapshot) {
-                  final List<EventWidget>? events = value.events[selectedDay];
-                  EventWidget? event;
-                  if (events == null || events.isEmpty) {
-                    event = null;
-                  } else {
-                    event = events[0];
-                  }
-                  if (documentSnapshot.exists) {
-                    // If the user is admin, a popup will appear to add an event
-                    // The popup displays a CalendarEventForm to add an event
-                    if (documentSnapshot['admin'] == true && event == null) {
-                      showDialog<Widget>(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return const AlertDialog(
-                            title: Text('Ajouter un événement'),
-                            content: CalendarEventForm(),
-                          );
-                        },
-                      );
-                    } else {
-                      // If the user is not admin or there is already an event, a popup will appear to see the events
-                      // The popup displays a CalendarEvents to see the events
-                      createPopupDialog(
-                        context,
-                        event,
-                        documentSnapshot['admin'],
-                      );
-                    }
-                  }
-                });
-              },
-              onFormatChanged: (CalendarFormat format) {
-                context.read<CalendarProvider>().setCalendarFormat(format);
-              },
-              onPageChanged: (DateTime focusedDay) {
-                context.read<CalendarProvider>().setFocusedDay(focusedDay);
-              },
-              // Load all the events from the database
-              eventLoader: (DateTime date) {
-                context.read<CalendarProvider>().getEventsFromDay(date);
-                return value.events[date] ?? <Widget>[];
-              },
-              calendarBuilders: firstBuilder,
-            );
+        Consumer<CalendarProvider>(
+      builder: (BuildContext context, CalendarProvider value, Widget? child) {
+        return TableCalendar<Widget>(
+          rowHeight: MediaQuery.of(context).size.height * 0.1,
+          daysOfWeekHeight: MediaQuery.of(context).size.height * 0.05,
+          firstDay: DateTime.utc(2021),
+          lastDay: DateTime.utc(2024, 12, 31),
+          focusedDay: value.focusedDay,
+          calendarFormat: value.calendarFormat,
+          selectedDayPredicate: (DateTime day) {
+            return isSameDay(value.selectedDay, day);
           },
-        ),
-      ),
+          onDaySelected: (DateTime selectedDay, DateTime focusedDay) {
+            if (!isSameDay(value.selectedDay, selectedDay)) {
+              context.read<CalendarProvider>().setSelectedDay(selectedDay);
+              context.read<CalendarProvider>().setFocusedDay(focusedDay);
+            }
+
+            // If the user is admin and click on a day, he can add an event
+            // if the user is not admin, he can just see the events
+            FirebaseFirestore.instance
+                .collection('users')
+                .doc(FirebaseAuth.instance.currentUser!.uid)
+                .get()
+                .then((DocumentSnapshot<Object?> documentSnapshot) {
+              final List<EventWidget>? events = value.events[selectedDay];
+              EventWidget? event;
+              if (events == null || events.isEmpty) {
+                event = null;
+              } else {
+                event = events[0];
+              }
+              if (documentSnapshot.exists) {
+                // If the user is admin, a popup will appear to add an event
+                // The popup displays a CalendarEventForm to add an event
+                if (documentSnapshot['admin'] == true && event == null) {
+                  showDialog<Widget>(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return const AlertDialog(
+                        title: Text('Ajouter un événement'),
+                        content: SingleChildScrollView(
+                          child: CalendarEventForm(),
+                        ),
+                      );
+                    },
+                  );
+                } else {
+                  // If the user is not admin or there is already an event, a popup will appear to see the events
+                  // The popup displays a CalendarEvents to see the events
+                  createPopupDialog(
+                    context,
+                    event,
+                    documentSnapshot['admin'],
+                  );
+                }
+              }
+            });
+          },
+          onFormatChanged: (CalendarFormat format) {
+            context.read<CalendarProvider>().setCalendarFormat(format);
+          },
+          onPageChanged: (DateTime focusedDay) {
+            context.read<CalendarProvider>().setFocusedDay(focusedDay);
+          },
+          // Load all the events from the database
+          eventLoader: (DateTime date) {
+            context.read<CalendarProvider>().getEventsFromDay(date);
+            return value.events[date] ?? <Widget>[];
+          },
+          calendarBuilders: firstBuilder,
+        );
+      },
     );
   }
 }

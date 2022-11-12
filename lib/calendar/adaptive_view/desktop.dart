@@ -50,7 +50,9 @@ class DesktopViewState extends State<DesktopView> {
               thickness: 1,
               color: Colors.grey,
             ),
-            const CalendarPage(),
+            const Expanded(
+              child: CalendarPage(),
+            ),
           ],
         ),
       ),
