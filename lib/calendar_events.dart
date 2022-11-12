@@ -61,23 +61,67 @@ class EventWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(),
-        borderRadius: BorderRadius.circular(12.0),
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(10),
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Text(event.title),
-          SizedBox(
-            height: 100,
-            child: SingleChildScrollView(
-              child: Text(event.description),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              event.title,
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-          Text("Sur la chaîne de ${event.channel}"),
-          Text("Jeu : ${event.game}"),
-          Text(event.url),
-        ],
+            const SizedBox(height: 10),
+            SingleChildScrollView(
+              child: Text(
+                event.description,
+                style: const TextStyle(
+                  fontSize: 16,
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              event.channel,
+              style: const TextStyle(
+                fontSize: 16,
+              ),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              event.game ?? '',
+              style: const TextStyle(
+                fontSize: 16,
+              ),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              event.date,
+              style: const TextStyle(
+                fontSize: 16,
+              ),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              event.time,
+              style: const TextStyle(
+                fontSize: 16,
+              ),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              event.url,
+              style: const TextStyle(
+                fontSize: 16,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -208,34 +252,45 @@ class _CalendarEventFormState extends State<CalendarEventForm> {
                     return null;
                   },
                 ),
-                ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Processing Data')),
-                      );
-                      context.read<CalendarProvider>().addEvent(
-                            DateTime(
-                              value.selectedDay.year,
-                              value.selectedDay.month,
-                              value.selectedDay.day,
-                              int.parse(_timeController.text.split(":")[0]),
-                              int.parse(_timeController.text.split(":")[1]),
-                            ),
-                            CalendarEvent(
-                              title: _titleController.text,
-                              description: _descriptionController.text,
-                              channel: _channelController.text,
-                              game: value.selectedGame,
-                              date: value.selectedDay.toString(),
-                              time: _timeController.text,
-                              url: _urlController.text,
-                            ),
+                Row(
+                  children: <Widget>[
+                    ElevatedButton(
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Processing Data')),
                           );
-                    }
-                  },
-                  child: const Text('Créer/Modifier'),
-                ),
+                          context.read<CalendarProvider>().addEvent(
+                                DateTime(
+                                  value.selectedDay.year,
+                                  value.selectedDay.month,
+                                  value.selectedDay.day,
+                                  int.parse(_timeController.text.split(":")[0]),
+                                  int.parse(_timeController.text.split(":")[1]),
+                                ),
+                                CalendarEvent(
+                                  title: _titleController.text,
+                                  description: _descriptionController.text,
+                                  channel: _channelController.text,
+                                  game: value.selectedGame,
+                                  date: value.selectedDay.toString(),
+                                  time: _timeController.text,
+                                  url: _urlController.text,
+                                ),
+                              );
+                        }
+                      },
+                      child: const Text('Créer/Modifier'),
+                    ),
+                    // Cancel Button
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text('Annuler'),
+                    ),
+                  ],
+                )
               ],
             ),
           );

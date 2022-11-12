@@ -19,6 +19,73 @@ class CalendarPage extends StatefulWidget {
 final DateTime today = DateTime.now();
 
 class _CalendarPageState extends State<CalendarPage> {
+  AlertDialog popupModifyEvent(BuildContext context) {
+    return const AlertDialog(
+      title: Text('Modifier l\'évènement'),
+      content: CalendarEventForm(),
+    );
+  }
+
+  void createPopupDialog(
+      BuildContext context, EventWidget? event, bool isAdmin) {
+    // Make the popup dialog adapt to the screen size and the platform
+    final double width = MediaQuery.of(context).size.width;
+    final double height = MediaQuery.of(context).size.height;
+    final bool isDesktop = width > 600;
+    Widget showEvent;
+
+    if (event == null) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Aucun événement'),
+            content: SizedBox(
+              width: isDesktop ? width * 0.3 : width * 0.9,
+              height: isDesktop ? height * 0.3 : height * 0.2,
+              child: const Text('Aucun événement ce jour-là'),
+            ),
+          );
+        },
+      );
+    } else {
+      if (isAdmin) {
+        showEvent = Column(
+          children: <Widget>[
+            event,
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return popupModifyEvent(context);
+                  },
+                );
+              },
+              child: const Text('Modifier'),
+            ),
+          ],
+        );
+      } else {
+        showEvent = event;
+      }
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(event.event.title),
+            content: SizedBox(
+              width: isDesktop ? width * 0.3 : width * 0.9,
+              height: isDesktop ? height * 0.3 : height * 0.2,
+              child: showEvent,
+            ),
+          );
+        },
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,12 +118,17 @@ class _CalendarPageState extends State<CalendarPage> {
                     .doc(FirebaseAuth.instance.currentUser!.uid)
                     .get()
                     .then((DocumentSnapshot<Object?> documentSnapshot) {
+                  final List<EventWidget>? events = value.events[selectedDay];
+                  EventWidget? event;
+                  if (events == null || events.isEmpty) {
+                    event = null;
+                  } else {
+                    event = events[0];
+                  }
                   if (documentSnapshot.exists) {
                     // If the user is admin, a popup will appear to add an event
                     // The popup displays a CalendarEventForm to add an event
-                    if (documentSnapshot['admin'] == true &&
-                        (value.events[selectedDay] == null ||
-                            value.events[selectedDay]!.isEmpty)) {
+                    if (documentSnapshot['admin'] == true && event == null) {
                       showDialog<Widget>(
                         context: context,
                         builder: (BuildContext context) {
@@ -67,18 +139,12 @@ class _CalendarPageState extends State<CalendarPage> {
                         },
                       );
                     } else {
-                      // If the user is not admin, a popup will appear to see the events
+                      // If the user is not admin or there is already an event, a popup will appear to see the events
                       // The popup displays a CalendarEvents to see the events
-                      showDialog<Widget>(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: const Text('Événements'),
-                            content: value.events[selectedDay] == null
-                                ? const Text('Aucun événement')
-                                : value.events[selectedDay]![0],
-                          );
-                        },
+                      createPopupDialog(
+                        context,
+                        event,
+                        documentSnapshot['admin'],
                       );
                     }
                   }
