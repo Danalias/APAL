@@ -6,11 +6,10 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'annonces/annonces.dart';
 import 'authentication/firebase_options.dart';
 import 'authentication/sign_in.dart';
-import 'calendar.dart';
-import 'calendar_provider.dart';
+import 'calendar/calendar.dart';
+import 'calendar/calendar_provider.dart';
 
 Future<void> main() async {
   await runZonedGuarded<Future<void>>(
@@ -45,7 +44,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'APAL',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -126,7 +125,7 @@ class Navigation extends StatelessWidget {
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
             if (snapshot.hasData) {
-              return const Annonces();
+              return const Calendar();
             } else {
               return const SignIn();
             }

@@ -1,3 +1,4 @@
+import 'package:apal/calendar/calendar_page.dart';
 import 'package:apal/profile/profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -72,7 +73,7 @@ class PhoneViewState extends State<PhoneView> {
           ),
         ),
       ),
-      body: const Center(),
+      body: const CalendarPage(),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(

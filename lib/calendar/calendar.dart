@@ -4,8 +4,8 @@ import 'adaptive_view/desktop.dart';
 import 'adaptive_view/phone.dart';
 import 'adaptive_view/tablet.dart';
 
-class Annonces extends StatelessWidget {
-  const Annonces({super.key});
+class Calendar extends StatelessWidget {
+  const Calendar({super.key});
 
   @override
   Widget build(BuildContext context) {

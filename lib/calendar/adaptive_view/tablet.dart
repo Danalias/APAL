@@ -1,18 +1,19 @@
-import 'package:apal/adaptive_bar/desktop_bar.dart';
+import 'package:apal/adaptive_bar/tablet_bar.dart';
+import 'package:apal/calendar/calendar_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
-class DesktopView extends StatefulWidget {
-  const DesktopView({super.key});
+class TabletView extends StatefulWidget {
+  const TabletView({super.key});
 
   @override
-  DesktopViewState createState() {
-    return DesktopViewState();
+  TabletViewState createState() {
+    return TabletViewState();
   }
 }
 
-class DesktopViewState extends State<DesktopView> {
+class TabletViewState extends State<TabletView> {
   String imageUrl = "";
 
   void getProfilePic() async {
@@ -43,20 +44,13 @@ class DesktopViewState extends State<DesktopView> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            desktopBar(context, imageUrl),
+            tabletBar(context, imageUrl),
             const VerticalDivider(
               width: 10,
               thickness: 1,
               color: Colors.grey,
             ),
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.deepOrangeAccent,
-                ),
-              ),
-            ),
+            const CalendarPage(),
           ],
         ),
       ),
